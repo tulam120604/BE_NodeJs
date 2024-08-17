@@ -12,7 +12,7 @@ import Routes_Attribute from './Routes/Attribute/Attribute';
 import RoutesFeedback from './Routes/Feedback/Feedback';
 import RoutesNotification from './Routes/Notification/Notification';
 import { handle_socket_event } from './socket/handle_socket';
-import { createServer } from 'node:http'
+// import { createServer } from 'node:http'
 import { Server } from 'socket.io';
 import RoutesAddress from './Routes/Auth/Address';
 import RoutesPayment from './Routes/Payment/Payment';
@@ -56,18 +56,18 @@ app.use('/v1', RoutesPayment)
 
 
 // web socket
-const server = createServer(app)
-const io = new Server(server, {
-    cors: {
-        origin: process.env.HOST_SOCKET,
-    }
-});
+// const server = createServer(app)
+// const io = new Server(server, {
+//     cors: {
+//         origin: process.env.HOST_SOCKET,
+//     }
+// });
 
-handle_socket_event(io)
+// handle_socket_event(io)
 
-server.listen(process.env.PORT_SOCKET, () => {
-    console.log('server running!');
-})
+// server.listen(process.env.PORT_SOCKET, () => {
+//     console.log('server running!');
+// })
 
 
 export const viteNodeApp = app;

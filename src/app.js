@@ -52,7 +52,7 @@ app.use('/v1', RoutesNotification)
 app.use('/v1', RoutesAddress)
 
 // payment
-app.use('/v1', RoutesPayment)
+// app.use('/v1', RoutesPayment)
 
 
 // web socket

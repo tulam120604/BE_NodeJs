@@ -1,14 +1,8 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
-export default async function ConnectDB(uri) {
+export default async function ConnectDB (uri) {
     try {
-        await mongoose.connect(uri,
-            {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                serverSelectionTimeoutMS: 30000,
-            }
-        );
+         await mongoose.connect(uri);
         console.log(`Connect Success  to uri : ${uri}`);
     }
     catch {

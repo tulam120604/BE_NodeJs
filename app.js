@@ -1,27 +1,26 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import ConnectDB from './Connect/database';
-import RoutesProducts from './Routes/Items/Products';
-import RoutesCategories from './Routes/Items/Categories';
-import RoutesAuth from './Routes/Auth/Auth';
-import RoutesCart from './Routes/Cart/Cart';
-import Routes_upload from './Routes/upload';
-import Routes_Order from './Routes/Order/Order';
-import Routes_Attribute from './Routes/Attribute/Attribute';
-import RoutesFeedback from './Routes/Feedback/Feedback';
-import RoutesNotification from './Routes/Notification/Notification';
-import { handle_socket_event } from './socket/handle_socket';
+import ConnectDB from './src/Connect/database';
+import RoutesProducts from './src/Routes/Items/Products';
+import RoutesCategories from './src/Routes/Items/Categories';
+import RoutesAuth from './src/Routes/Auth/Auth';
+import RoutesCart from './src/Routes/Cart/Cart';
+import Routes_upload from './src/Routes/upload';
+import Routes_Order from './src/Routes/Order/Order';
+import Routes_Attribute from './src/Routes/Attribute/Attribute';
+import RoutesFeedback from './src/Routes/Feedback/Feedback';
+import RoutesNotification from './src/Routes/Notification/Notification';
+import { handle_socket_event } from './src/socket/handle_socket';
 import { createServer } from 'node:http'
 import { Server } from 'socket.io';
-import RoutesAddress from './Routes/Auth/Address';
-import RoutesPayment from './Routes/Payment/Payment';
+import RoutesAddress from './src/Routes/Auth/Address';
+import RoutesPayment from './src/Routes/Payment/Payment';
 
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-
 
 
 ConnectDB(process.env.DB_MONGO);

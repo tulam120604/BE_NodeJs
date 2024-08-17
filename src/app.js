@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import ConnectDB from './Connect/database'
+import ConnectDB from './Connect/database';
 import RoutesProducts from './Routes/Items/Products';
 import RoutesCategories from './Routes/Items/Categories';
 import RoutesAuth from './Routes/Auth/Auth';
@@ -11,35 +11,19 @@ import Routes_Order from './Routes/Order/Order';
 import Routes_Attribute from './Routes/Attribute/Attribute';
 import RoutesFeedback from './Routes/Feedback/Feedback';
 import RoutesNotification from './Routes/Notification/Notification';
+import { handle_socket_event } from './socket/handle_socket';
 import { createServer } from 'node:http'
 import { Server } from 'socket.io';
+import RoutesAddress from './Routes/Auth/Address';
+import RoutesPayment from './Routes/Payment/Payment';
 
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// web socket
-const server = createServer(app)
-const io = new Server(server, {
-    cors : {
-        origin: 'http://localhost:5000',
-    }
-});
 
-const a = 'ahjihi'
 
-io.on('connection', (socket) => {
-    console.log(`Client id ${socket.id} connected`);
-
-    socket.on('send_message', (a) => {
-        io.emit('res_message', a)
-    })
-
-    socket.on('disconnect' ,  () => {
-        console.log('Client disconnect!')
-    })
-})
 
 ConnectDB(process.env.DB_MONGO);
 
@@ -66,9 +50,25 @@ app.use('/v1', RoutesFeedback);
 // notification
 app.use('/v1', RoutesNotification)
 
+// address 
+app.use('/v1', RoutesAddress)
 
-server.listen(3000, () => {
-    console.log('server running!')
+// payment
+app.use('/v1', RoutesPayment)
+
+
+// web socket
+const server = createServer(app)
+const io = new Server(server, {
+    cors: {
+        origin: process.env.HOST_SOCKET,
+    }
+});
+
+handle_socket_event(io)
+
+server.listen(process.env.PORT_SOCKET, () => {
+    console.log('server running!');
 })
 
 

@@ -5,7 +5,7 @@ import Attribute from '../../Model/Products/Attribute';
 
 
 export async function Add_To_Cart(req, res) {
-    const { user_id, product_id, quantity, color, size_attribute, price_item_attr } = req.body;
+    const { user_id, product_id, quantity, color, size_attribute, price_item_attr, item_in_stock } = req.body;
     try {
         const data_item = await Products.findById(product_id).populate('attributes');
         let price_item = (price_item_attr > 0) ? price_item_attr : data_item?.price_product;
@@ -16,7 +16,7 @@ export async function Add_To_Cart(req, res) {
             const varr = data_item.attributes.varriants.find(color_attr => color_attr.color_item === color);
             if (varr) {
                 for (let i of varr.size_item) {
-                    if (i.name_size) {
+                    if (i.name_size === size_attribute) {
                         color_item = varr.color_item;
                         quantity_by_item = i.stock_item;
                         size_attribute_item = i.name_size
@@ -27,26 +27,6 @@ export async function Add_To_Cart(req, res) {
                     }
                 }
             }
-            // for (let i of data_item.attributes) {
-            //     for (let j of i.varriants) {
-            //         if (j.color_item == color) {
-            //             for (let k of j.size_item) {
-            //                 if (k.name_size) {
-            //                     if (k.name_size == size_attribute) {
-            //                         quantity_by_item = k.stock_item;
-            //                         color_item = j.color_item;
-            //                         size_attribute_item = k.name_size;
-            //                     }
-            //                 }
-            //                 else {
-            //                     quantity_by_item = k.stock_item;
-            //                     color_item = j.color_item;
-            //                 }
-
-            //             }
-            //         }
-            //     }
-            // }
         }
         else {
             quantity_by_item = quantity;
@@ -77,6 +57,10 @@ export async function Add_To_Cart(req, res) {
                             data_cart.items[i].quantity = data_cart.items[i].quantity + quantity;
                             data_cart.items[i].total_price_item = price_item * data_cart.items[i].quantity;
                             check_item = true
+                        }
+                        if (data_cart.items[i].quantity >= item_in_stock) {
+                            data_cart.items[i].quantity = item_in_stock;
+                            data_cart.items[i].total_price_item = price_item * data_cart.items[i].quantity;
                         }
                     }
                 }

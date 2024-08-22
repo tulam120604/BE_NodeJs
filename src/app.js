@@ -70,4 +70,5 @@ app.use('/v1', RoutesAddress)
 // })
 
 
-export const viteNodeApp = app;
+// export const viteNodeApp = app;
+export default app

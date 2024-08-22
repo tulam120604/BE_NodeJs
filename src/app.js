@@ -65,9 +65,8 @@ app.use('/v1', RoutesAddress)
 
 // handle_socket_event(io)
 
-// server.listen(process.env.PORT_SOCKET, () => {
-//     console.log('server running!');
-// })
+app.listen(process.env.PORT_SOCKET, () => {
+    console.log('server running!');
+})
 
-
-export const viteNodeApp = app;
+export default app

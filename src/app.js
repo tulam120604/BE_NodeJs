@@ -15,6 +15,7 @@ import RoutesNotification from './Routes/Notification/Notification.js';
 // import { createServer } from 'node:http'
 // import { Server } from 'socket.io';
 import RoutesAddress from './Routes/Auth/Address.js';
+import Routes_Favorites from './Routes/Items/Favorites.js';
 // import RoutesPayment from './Routes/Payment/Payment';
 
 dotenv.config();
@@ -50,6 +51,9 @@ app.use('/v1', RoutesNotification)
 
 // address 
 app.use('/v1', RoutesAddress)
+
+// favorite 
+app.use('/v1', Routes_Favorites)
 
 // payment
 // app.use('/v1', RoutesPayment)

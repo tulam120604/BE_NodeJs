@@ -1,21 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import ConnectDB from './database.js';
-import RoutesProducts from './src/Routes/Items/Products.js';
-import RoutesCategories from './src/Routes/Items/Categories.js';
-import RoutesAuth from './src/Routes/Auth/Auth.js';
-import RoutesCart from './src/Routes/Cart/Cart.js';
-import Routes_upload from './src/Routes/upload.js';
-import Routes_Order from './src/Routes/Order/Order.js';
-import Routes_Attribute from './src/Routes/Attribute/Attribute.js';
-import RoutesFeedback from './src/Routes/Feedback/Feedback.js';
-import RoutesNotification from './src/Routes/Notification/Notification.js';
+import ConnectDB from './Connect/database.js';
+import RoutesProducts from './Routes/Items/Products.js';
+import RoutesCategories from './Routes/Items/Categories.js';
+import RoutesAuth from './Routes/Auth/Auth.js';
+import RoutesCart from './Routes/Cart/Cart.js';
+import Routes_upload from './Routes/upload.js';
+import Routes_Order from './Routes/Order/Order.js';
+import Routes_Attribute from './Routes/Attribute/Attribute.js';
+import RoutesFeedback from './Routes/Feedback/Feedback.js';
+import RoutesNotification from './Routes/Notification/Notification.js';
 // import { handle_socket_event } from './socket/handle_socket';
 // import { createServer } from 'node:http'
 // import { Server } from 'socket.io';
-import RoutesAddress from './src/Routes/Auth/Address.js';
-import Routes_Favorites from './src/Routes/Items/Favorites.js';
+import RoutesAddress from './Routes/Auth/Address.js';
+import Routes_Favorites from './Routes/Items/Favorites.js';
 // import RoutesPayment from './Routes/Payment/Payment';
 
 dotenv.config();

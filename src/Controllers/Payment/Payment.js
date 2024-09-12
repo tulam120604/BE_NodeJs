@@ -26,7 +26,7 @@ export async function create_payment(req, res) {
     // ****
     const total_price = items_order.reduce((acc, curr) => (acc + curr.total_price_item), 0);
     const embed_data = {
-        redirecturl: "http://localhost:5000/"
+        redirecturl: "https://fe-store88.vercel.app/"
     };
     try {
         const items = items_order.map(value => ({
@@ -46,7 +46,7 @@ export async function create_payment(req, res) {
             amount: total_price,
             description: `Store88 - Mời đại vương thanh toán đơn hàng.`,
             bank_code: "",
-            callback_url: "https://9b24-14-224-166-200.ngrok-free.app/v1/callback"
+            callback_url: "https://be-node-js.vercel.app/v1/callback"
         };
         // appid|apptransid|appuser|amount|apptime|embeddata|item
         const data = config.app_id + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;

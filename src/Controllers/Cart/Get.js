@@ -11,8 +11,14 @@ export async function list_carts(req, res) {
                 message: "Khong tim thay tai khoan !"
             })
         }
-        const cart = await Carts.findOne({ user_id }).populate('items.product_id');
-        await Carts.populate(cart.items, { path: 'product_id.attributes' })
+        const cart = await Carts.findOne({ user_id }).populate({
+            path: 'items.product_id',
+            populate: [
+                { path: 'attributes' },
+                { path: 'id_user_seller' }
+            ]
+        },
+        );
         if (!cart) {
             return res.status(StatusCodes.OK).json({
                 message: 'No data!'
@@ -29,7 +35,6 @@ export async function list_carts(req, res) {
                 return past_value + present_value.total_price_item;
             }
         }, 0);
-        //  console.log(count_total_price);
         cart.total_price = count_total_price;
         if (!cart || cart.length === 0) {
             return res.status(StatusCodes.NOT_FOUND).json({

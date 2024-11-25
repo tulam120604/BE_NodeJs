@@ -1,13 +1,14 @@
 import Products from "../../Model/Products/Products.js";
-import Attribute from "../../Model/Products/Attribute.js";
 import { StatusCodes } from 'http-status-codes';
 import { validateProducts } from "../../Validates/Products.js";
 import cloudinary from "../../utils/cloudinary.js";
+import Variant from "../../Model/Products/Variant.js";
+import { create_variant } from "../Attribute/create.js";
 
 
 // edit all field
 export async function edit_Product(req, res) {
-    const { short_name, ...rest } = req.body;
+    const { short_name } = req.body;
     try {
         const check_id = await Products.findById(req.params.id);
         if (!check_id) {
@@ -39,40 +40,26 @@ export async function edit_Product(req, res) {
             });
         }
         let convert_Attributes;
-        if (req.body.attributes) {
+        if (req.body.variant) {
             convert_Attributes = JSON.parse(req.body.attributes);
         }
         if (convert_Attributes) {
-            await Attribute.findOneAndDelete({ id_item: req.params.id });
+            await Variant.findOneAndDelete({ id_item: req.params.id });
             if (!Array.isArray(convert_Attributes)) {
                 convert_Attributes = Object.keys(convert_Attributes)
-                    .filter(key => !['_id', 'id_item', 'varriants', 'createdAt', 'updatedAt'].includes(key))
+                    .filter(key => !['_id', 'id_item', 'variants', 'createdAt', 'updatedAt'].includes(key))
                     .map(key => convert_Attributes[key]);
             }
-            const varriant = convert_Attributes.map(item => (
-                {
-                    color_item: convert_Attributes ? item.color_item : '',
-                    size_item: item.size_item.map(size =>
-                    (
-                        {
-                            name_size: size.name_size ? size.name_size.toString() : '',
-                            stock_item: size.stock_item ? size.stock_item : 0,
-                            price_attribute: size.price_attribute > 0 && size.price_attribute
-                        }
-                    )
-                    )
-                }
-            ))
-            const new_attribute = await Attribute.create({ id_item: req.params.id, varriants: varriant, })
+            const variant = await create_variant(convert_Attributes);
             const dataClient = {
                 ...req.body,
-                attributes: null,
+                variant: null,
                 gallery: img_upload
             }
             const data = await Products.findByIdAndUpdate(req.params.id, {
                 $set: {
                     ...dataClient,
-                    attributes: new_attribute._id
+                    variant: variant._id
                 }
             }, { new: true });
             return res.status(StatusCodes.OK).json({
@@ -83,7 +70,7 @@ export async function edit_Product(req, res) {
         else {
             const dataClient = {
                 ...req.body,
-                attributes: convert_Attributes,
+                variant: convert_Attributes,
                 gallery: img_upload
             }
             const data = await Products.findByIdAndUpdate(req.params.id, dataClient, { new: true });
@@ -103,20 +90,21 @@ export async function edit_Product(req, res) {
 // update quantity item when order 
 export async function update_quantity_item(data_items_order) {
     for (let i of data_items_order) {
-        if (i.product_id.attributes) {
-            const data_attr = await Attribute.find({ id_item: i.product_id._id });
+        if (i.product_id.variant) {
+            const data_attr = await Variant.find({ _id: i.product_id.variant._id });
             for (let j of data_attr) {
-                for (let k of j.varriants) {
-                    if (k.color_item == i.color_item) {
-                        for (let x of k.size_item) {
-                            if (x.name_size) {
-                                if (x.name_size == i.size_attribute_item) {
-                                    x.stock_item = x.stock_item - i.quantity;
-                                    x.sale_quantity_attr += i.quantity
+                for (let k of j.variants) {
+                    if (k.attribute == i.name_varriant) {
+                        for (let x of k.value_variants) {
+                            if (x.name_variant) {
+                                if (x.name_variant == i.value_varriant) {
+                                    x.stock_variant = x.stock_variant - i.quantity;
+                                    x.sales_item += i.quantity
                                 }
                             } else {
-                                x.stock_item = x.stock_item - i.quantity;
-                                x.sale_quantity_attr += i.quantity
+                                x.stock_variant = x.stock_variant - i.quantity;
+                                x.sales_item += i.quantity
+                                
                             }
                         }
                     }

@@ -8,15 +8,15 @@ import RoutesAuth from './Routes/Auth/Auth.js';
 import RoutesCart from './Routes/Cart/Cart.js';
 import Routes_upload from './Routes/upload.js';
 import Routes_Order from './Routes/Order/Order.js';
-import Routes_Attribute from './Routes/Attribute/Attribute.js';
 import RoutesFeedback from './Routes/Feedback/Feedback.js';
 import RoutesNotification from './Routes/Notification/Notification.js';
 // import { handle_socket_event } from './socket/handle_socket';
 // import { createServer } from 'node:http'
 // import { Server } from 'socket.io';
 import RoutesAddress from './Routes/Auth/Address.js';
+import RoutesPayment from './Routes/Payment/Payment.js';
 import Routes_Favorites from './Routes/Items/Favorites.js';
-// import RoutesPayment from './Routes/Payment/Payment';
+import Routes_Attribute from './Routes/Attribute/Attribute.js';
 
 dotenv.config();
 const app = express();
@@ -52,11 +52,11 @@ app.use('/v1', RoutesNotification)
 // address 
 app.use('/v1', RoutesAddress)
 
-// favorite 
-app.use('/v1', Routes_Favorites)
-
 // payment
-// app.use('/v1', RoutesPayment)
+app.use('/v1', RoutesPayment)
+
+// favorite
+app.use('/v1', Routes_Favorites)
 
 
 // web socket
@@ -68,6 +68,13 @@ app.use('/v1', Routes_Favorites)
 // });
 
 // handle_socket_event(io)
+
+// server.listen(process.env.PORT_SOCKET, () => {
+//     console.log('server running!');
+// })
+
+// run server without vite
+// app.listen(process.env.PORT_SERVER)
 
 app.listen(process.env.PORT_SOCKET, () => {
     console.log('server running!');

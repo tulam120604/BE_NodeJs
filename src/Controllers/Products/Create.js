@@ -3,7 +3,7 @@ import Categories from "../../Model/Products/Categories.js";
 import { StatusCodes } from "http-status-codes";
 import { validateProducts } from "../../Validates/Products.js";
 import cloudinary from "../../utils/cloudinary.js";
-import Attribute from "../../Model/Products/Attribute.js";
+import { create_variant } from "../Attribute/create.js";
 
 
 // create 
@@ -39,7 +39,7 @@ export async function Create_Product(req, res) {
         const allData = {
             ...dataClient,
             category_id: category_id ? category_id : checkNameCategory._id,
-            attributes: null,
+            variant: null,
             gallery: url_image_gallery
         };
         const { error } = validateProducts.validate(req.body, { abortEarly: false });
@@ -49,29 +49,12 @@ export async function Create_Product(req, res) {
                 message
             })
         }
-        if (dataClient.attributes) {
-            const convert_Attributes = JSON.parse(dataClient.attributes);
-            const varriant = convert_Attributes.map(item => (
-                {
-                    color_item: convert_Attributes ? item.color_item : '',
-                    size_item: item.size_item.map(size =>
-                    (
-                        {
-                            name_size: size.name_size ? size.name_size.toString() : '',
-                            stock_item: size.stock_item ? size.stock_item : 0,
-                            price_attribute: size.price_attribute > 0 && size.price_attribute
-                        }
-                    )
-                    )
-                }
-            ));
-            const attribute_data = {
-                varriants: varriant,
-            }
-            const new_attributes = await Attribute.create(attribute_data);
+        if (dataClient.variant) {
+            const convert_variant = JSON.parse(dataClient.variant);
+            const variant = await create_variant(convert_variant);
             const dataRequest = {
                 ...allData,
-                attributes: new_attributes._id
+                variant: variant._id
             }
             const data = await Products.create(dataRequest);
             return res.status(StatusCodes.CREATED).json({

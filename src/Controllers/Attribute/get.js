@@ -1,22 +1,95 @@
 import Attribute from "../../Model/Products/Attribute.js";
 import { StatusCodes } from "http-status-codes";
+import Category_attribute from "../../Model/Products/Category_attribute.js";
 
-export async function get_attribute (req, res) {
-    const {id_item} = req.params;
+
+// the loai thuoc tinh
+export async function get_category_attribute(req, res) {
     try {
-        const data_attribute = await Attribute.find({id_item : id_item});
-        if (!data_attribute || data_attribute.length < 1) {
+        const { id_account } = req.params.id_account;
+        if (!id_account) {
             return res.status(StatusCodes.NOT_FOUND).json({
-                message : 'No data!'
+                message: 'No account!'
             })
         };
+        const data = await Category_attribute.find({
+            id_account: req.params.id_account
+        });
         return res.status(StatusCodes.OK).json({
-            message : 'Done',
-            data_attribute
+            message: 'OK',
+            data
         })
     } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message : error.message || 'Lỗi rồi đại vương ơi!!'
+            message: error.message
+        })
+    }
+}
+
+
+export async function get_one_category_attribute(req, res) {
+    try {
+        const { id_account } = req.params.id_account;
+        if (!id_account) {
+            return res.status(StatusCodes.NOT_FOUND).json({
+                message: 'No account!'
+            })
+        };
+        const data = await Category_attribute.findOne({
+            id_account,
+            _id: req.headers['_id_customer_request_headers']
+        })
+        return res.status(StatusCodes.OK).json({
+            message: 'OK',
+            data
+        })
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: error.message
+        })
+    }
+}
+
+// thuoc tinh
+export async function get_attribute_catalog(req, res) {
+    try {
+        const id_account = req.params.id_account;
+        if (!id_account) {
+            return res.status(StatusCodes.NOT_FOUND).json({
+                message: 'No account!'
+            })
+        };
+        const data = await Attribute.find({ id_account });
+        return res.status(StatusCodes.OK).json({
+            message: 'OK',
+            data
+        })
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: error.message
+        })
+    }
+}
+
+export async function get_one_attribute_catalog(req, res) {
+    try {
+        const id_account = req.params.id_account;
+        if (!id_account) {
+            return res.status(StatusCodes.NOT_FOUND).json({
+                message: 'No account!'
+            })
+        };
+        const data = await Attribute.findOne({
+            id_account,
+            _id: req.headers['_id_customer_request_headers']
+        });
+        return res.status(StatusCodes.OK).json({
+            message: 'OK',
+            data
+        })
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: error.message
         })
     }
 }

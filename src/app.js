@@ -81,4 +81,4 @@ app.listen(process.env.PORT_SOCKET, () => {
 })
 
 
-export const viteNodeApp = app;
+export default app;

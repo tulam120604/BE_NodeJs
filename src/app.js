@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import ConnectDB from './Connect/database.js';
 import RoutesProducts from './Routes/Items/Products.js';
 import RoutesCategories from './Routes/Items/Categories.js';
@@ -10,18 +11,21 @@ import Routes_upload from './Routes/upload.js';
 import Routes_Order from './Routes/Order/Order.js';
 import RoutesFeedback from './Routes/Feedback/Feedback.js';
 import RoutesNotification from './Routes/Notification/Notification.js';
-// import { handle_socket_event } from './socket/handle_socket';
-// import { createServer } from 'node:http'
-// import { Server } from 'socket.io';
+import { handle_socket_event } from './socket/handle_socket';
+import { createServer } from 'node:http'
+import { Server } from 'socket.io';
 import RoutesAddress from './Routes/Auth/Address.js';
 import RoutesPayment from './Routes/Payment/Payment.js';
 import Routes_Favorites from './Routes/Items/Favorites.js';
-import Routes_Attribute from './Routes/Attribute/Attribute.js';
 
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:5000', 'https://fe-store88.vercel.app/'],
+    credentials: true
+}));
+app.use(cookieParser())
 
 
 ConnectDB(process.env.DB_MONGO);
@@ -30,8 +34,6 @@ ConnectDB(process.env.DB_MONGO);
 app.use('/v1', RoutesProducts);
 app.use('/v1', RoutesCategories);
 
-// attribute
-app.use('/v1', Routes_Attribute)
 
 // authen
 app.use('/v1', RoutesAuth);
@@ -74,10 +76,9 @@ app.use('/v1', Routes_Favorites)
 // })
 
 // run server without vite
-// app.listen(process.env.PORT_SERVER)
+// app.listen(process.env.PORT_SOCKET, () => {
+//     console.log('server running!');
+// })
 
-app.listen(process.env.PORT_SOCKET, () => {
-    console.log('server running!');
-})
 
-export default app
+export const viteNodeApp = app;

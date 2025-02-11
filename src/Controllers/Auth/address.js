@@ -1,27 +1,43 @@
 import Address from "../../Model/Auth/Address.js";
+import Account from "../../Model/Auth/Account.js";
 import { StatusCodes } from 'http-status-codes';
+import { Validate_Address_User } from "../../Validates/Auth.js";
 
 export async function create_address(req, res) {
     try {
-        const user_id = req.params.user_id;
-        if (!user_id) {
+        const user = req.user
+        const user_id = req.user.id;
+        if (!user || !user_id) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 message: 'No user'
             })
         };
-        const total_address = await Address.countDocuments({ user_id });
-        let default_address;
-        if (total_address < 1) {
-            default_address = true
-        } else {
-            default_address = false
+        if (user.address.length > 4) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: 'Đã đạt đến giới hạn địa chỉ trong 1 tài khoản, vui lòng xóa bớt 1 địa chỉ!'
+            })
         }
+        const { error } = Validate_Address_User.validate({
+            about_address: req.body.about_address,
+        }, {
+            abortEarly: false
+        })
+        if (error) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: error.message
+            });
+        }
+        const total_address = await Address.countDocuments({ user_id });
+        const account_user = await Account.findOne({ _id: user_id })
+        let default_address = total_address < 1;
         const data = await Address.create({
             user_id: user_id,
             about_address: req.body.about_address,
             status_address: default_address
         })
-        return res.status(StatusCodes.OK).json({
+        account_user.address.push(data._id);
+        await account_user.save();
+        return res.status(StatusCodes.CREATED).json({
             message: 'OK',
             data
         })
@@ -34,10 +50,10 @@ export async function create_address(req, res) {
 
 export async function get_address(req, res) {
     try {
-        const data = await Address.find({ user_id: req.params.user_id });
+        const data = await Address.find({ user_id: req.user.id });
         // default address
         const default_address = await Address.findOne({
-            user_id: req.params.user_id,
+            user_id: req.user.id,
             status_address: true
         })
         return res.status(StatusCodes.OK).json({
@@ -55,17 +71,12 @@ export async function get_address(req, res) {
 
 export async function edit_address(req, res) {
     try {
-        if (id_user) {
-            return res.status(StatusCodes.NOT_FOUND).json({
-                message: 'No user'
-            })
-        };
-        if (!req.params.id) {
+        if (!req.user.id) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 message: 'no user'
             })
         }
-        const data = await Address.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const data = await Address.findByIdAndUpdate(req.user.id, req.body, { new: true });
         return res.status(StatusCodes.OK).json({
             message: 'OK',
             data
@@ -97,7 +108,7 @@ export async function remove_address(req, res) {
 
 export async function update_default_address(req, res) {
     try {
-        const id_user = req.params.id_user;
+        const id_user = req.user.id;
         const id_address = req.body.id_address;
         const data_address = await Address.find({ user_id: id_user });
         if (!data_address) {

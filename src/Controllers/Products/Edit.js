@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { validateProducts } from "../../Validates/Products.js";
 import cloudinary from "../../utils/cloudinary.js";
 import Variant from "../../Model/Products/Variant.js";
-import { create_variant } from "../Attribute/create.js";
+import { create_variant } from "./Create_variant.js";
 
 
 // edit all field
@@ -11,6 +11,7 @@ export async function edit_Product(req, res) {
     const { short_name } = req.body;
     try {
         const check_id = await Products.findById(req.params.id);
+        const id_user = req.user.id;
         if (!check_id) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 message: 'No data',
@@ -70,6 +71,7 @@ export async function edit_Product(req, res) {
         else {
             const dataClient = {
                 ...req.body,
+                id_user_seller: id_user,
                 variant: convert_Attributes,
                 gallery: img_upload
             }
@@ -104,7 +106,7 @@ export async function update_quantity_item(data_items_order) {
                             } else {
                                 x.stock_variant = x.stock_variant - i.quantity;
                                 x.sales_item += i.quantity
-                                
+
                             }
                         }
                     }

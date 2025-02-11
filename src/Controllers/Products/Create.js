@@ -3,12 +3,13 @@ import Categories from "../../Model/Products/Categories.js";
 import { StatusCodes } from "http-status-codes";
 import { validateProducts } from "../../Validates/Products.js";
 import cloudinary from "../../utils/cloudinary.js";
-import { create_variant } from "../Attribute/create.js";
+import { create_variant } from "./Create_variant.js";
 
 
 // create 
 export async function Create_Product(req, res) {
     const { category_id } = req.body;
+    const id_user = req.user.id
     const dataClient = req.body;
     try {
         if (category_id) {
@@ -39,6 +40,7 @@ export async function Create_Product(req, res) {
         const allData = {
             ...dataClient,
             category_id: category_id ? category_id : checkNameCategory._id,
+            id_user_seller: id_user,
             variant: null,
             gallery: url_image_gallery
         };

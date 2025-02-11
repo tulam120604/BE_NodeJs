@@ -55,13 +55,13 @@ export async function Login(req, res) {
         const check_email = await Account.findOne({ email });
         if (!check_email) {
             return res.status(StatusCodes.UNAUTHORIZED).json({
-                message: 'Email khong dung !'
+                message: 'Sai thong tin!'
             })
         };
         const check_password = await brcyptjs.compare(password, check_email.password);
         if (!check_password) {
             return res.status(StatusCodes.UNAUTHORIZED).json({
-                message: "Sai mat khau !"
+                message: "Sai thong tin!"
             })
         };
         const accessToken = createAccessToken(check_email._id);
@@ -80,23 +80,7 @@ export async function Login(req, res) {
     }
 }
 
-export async function log_out(req, res) {
-    try {
-        const token = req.headers.authorization;
-        if (token) {
-            return res.status(StatusCodes.NOT_FOUND).json({
-                message: 'No token'
-            })
-        }
-
-    } catch (error) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: error.message || "Lỗi server rồi đại vương ơi!"
-        })
-    }
-}
-
-export async function granting_premissions(req, res) {
+export async function set_role_user_to_seller(req, res) {
     const id_user = req.body.sender_id._id;
     try {
         const data = await Account.findOne({ _id: id_user });
@@ -126,16 +110,17 @@ export async function granting_premissions(req, res) {
     }
 }
 
-
+// dang xuat
 export async function logout(req, res) {
     try {
-        const token = req.headers.authorization;
+        const token = req.cookies.access_token;
         if (!token) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 message: 'No token'
             })
         };
         await Blacklist_token.create({ token });
+        res.clearCookie('access_token', { path: '/' });
         return res.status(StatusCodes.OK).json({
             message: 'OK logout!'
         })
@@ -173,7 +158,7 @@ export async function refesh_token(req, res) {
                 })
             }
             try {
-                const user = await Account.findOne({_id : decoded.userId})
+                const user = await Account.findOne({ _id: decoded.userId })
                 if (!user) {
                     return res.status(StatusCodes.NOT_FOUND).json({
                         message: 'Không tìm thấy user!'

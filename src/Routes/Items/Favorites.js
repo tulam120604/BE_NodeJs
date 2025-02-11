@@ -1,11 +1,12 @@
 import express from 'express';
-import { create_favorite, detail_favorites_by_user, list_favorites, remove_favorite } from '../../Controllers/Favorites/Favorites.js';
+import { add_item_to_favorite, list_item_favorites, remove_item_favorite, view_item_favorite } from '../../Controllers/Favorites/Favorites.js';
+import { middleWare_get_user_from_cookie } from '../../middleware/Auth.js';
 
 const Routes_Favorites = express.Router();
 
-Routes_Favorites.get('/list_item_favorite/:id_user', list_favorites);
-Routes_Favorites.get('/detail_item_favorite/:id_user', detail_favorites_by_user);
-Routes_Favorites.post('/add_item_favorite', create_favorite);
-Routes_Favorites.post('/remove_item_favorite/:id_user', remove_favorite);
+Routes_Favorites.get('/list_item_favorite', middleWare_get_user_from_cookie, list_item_favorites);
+Routes_Favorites.get('/view_item_favorite', middleWare_get_user_from_cookie, view_item_favorite);
+Routes_Favorites.post('/add_item_favorite', middleWare_get_user_from_cookie, add_item_to_favorite);
+Routes_Favorites.post('/remove_item_favorite', middleWare_get_user_from_cookie, remove_item_favorite);
 
 export default Routes_Favorites

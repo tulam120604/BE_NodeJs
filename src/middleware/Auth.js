@@ -33,6 +33,7 @@ export async function verify_token_from_cookie(token) {
 // lấy thông tin user qua cookie
 export async function middleWare_get_user_from_cookie(req, res, next) {
     try {
+        console.log(req)
         const token = req.cookies.access_token;
         if (!token) {
             return res.status(StatusCodes.BAD_REQUEST).json({

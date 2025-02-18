@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(cors({
     origin: ['http://localhost:5000', 'https://fe-store88.vercel.app'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
 }));
 app.use(cookieParser())
 

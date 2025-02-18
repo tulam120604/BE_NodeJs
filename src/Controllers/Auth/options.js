@@ -69,8 +69,9 @@ export async function Login(req, res) {
         check_email.password = undefined;
         res.cookie('access_token', accessToken, {
             httpOnly: true,
-            secure: false,
-            maxAge: 604800000
+            secure: true,
+            maxAge: 604800000,
+            sameSite: 'None'
         })
         return res.status(StatusCodes.OK).json({
             message: 'Login Done !',

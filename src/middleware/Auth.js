@@ -33,7 +33,6 @@ export async function verify_token_from_cookie(token) {
 // lấy thông tin user qua cookie
 export async function middleWare_get_user_from_cookie(req, res, next) {
     try {
-        console.log(req)
         const token = req.cookies.access_token;
         if (!token) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -71,12 +70,13 @@ export async function middleWare(req, res, next) {
                 message: 'Token không hợp lệ!!'
             })
         }
-        const user = await verify_token_from_cookie(token)
+        const user = await verify_token_from_cookie(token);
         if (!user) {
             return res.status(StatusCodes.UNAUTHORIZED).json({
                 message: 'Người dùng không tồn tại!!'
             })
         };
+        req.user = user;
         if (user.role === 'admin_global' || user.role === 'seller') {
             return next();
         }

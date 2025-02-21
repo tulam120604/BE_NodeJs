@@ -1,67 +1,66 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import ConnectDB from './Connect/database.js';
-import RoutesProducts from './Routes/Items/Products.js';
-import RoutesCategories from './Routes/Items/Categories.js';
-import RoutesAuth from './Routes/Auth/Auth.js';
-import RoutesCart from './Routes/Cart/Cart.js';
-import Routes_upload from './Routes/upload.js';
-import Routes_Order from './Routes/Order/Order.js';
-import RoutesFeedback from './Routes/Feedback/Feedback.js';
-import RoutesNotification from './Routes/Notification/Notification.js';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import ConnectDB from "./Connect/database.js";
+import RoutesProducts from "./Routes/Items/Products.js";
+import RoutesCategories from "./Routes/Items/Categories.js";
+import RoutesAuth from "./Routes/Auth/Auth.js";
+import RoutesCart from "./Routes/Cart/Cart.js";
+import Routes_upload from "./Routes/upload.js";
+import Routes_Order from "./Routes/Order/Order.js";
+import RoutesFeedback from "./Routes/Feedback/Feedback.js";
+import RoutesNotification from "./Routes/Notification/Notification.js";
 // import { handle_socket_event } from './socket/handle_socket';
 // import { createServer } from 'node:http'
 // import { Server } from 'socket.io';
-import RoutesAddress from './Routes/Auth/Address.js';
+import RoutesAddress from "./Routes/Auth/Address.js";
 // import RoutesPayment from './Routes/Payment/Payment.js';
-import Routes_Favorites from './Routes/Items/Favorites.js';
+import Routes_Favorites from "./Routes/Items/Favorites.js";
 
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(cors({
-    origin: 'https://fe-store88.vercel.app',
+app.use(
+  cors({
+    origin: "https://fe-store88.vercel.app",
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
-}));
-app.use(cookieParser())
-
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  })
+);
+app.use(cookieParser());
 
 ConnectDB(process.env.DB_MONGO);
 
 // item
-app.use('/v1', RoutesProducts);
-app.use('/v1', RoutesCategories);
-
+app.use("/v1", RoutesProducts);
+app.use("/v1", RoutesCategories);
 
 // authen
-app.use('/v1', RoutesAuth);
-app.use('/v1', Routes_upload);
+app.use("/v1", RoutesAuth);
+app.use("/v1", Routes_upload);
 
 // cart
-app.use('/v1', RoutesCart);
+app.use("/v1", RoutesCart);
 
 // order
-app.use('/v1', Routes_Order);
+app.use("/v1", Routes_Order);
 
 // feedback
-app.use('/v1', RoutesFeedback);
+app.use("/v1", RoutesFeedback);
 
 // notification
-app.use('/v1', RoutesNotification)
+app.use("/v1", RoutesNotification);
 
-// address 
-app.use('/v1', RoutesAddress)
+// address
+app.use("/v1", RoutesAddress);
 
 // payment
 // app.use('/v1', RoutesPayment)
 
 // favorite
-app.use('/v1', Routes_Favorites)
-
+app.use("/v1", Routes_Favorites);
 
 // web socket
 // const server = createServer(app)
@@ -79,8 +78,7 @@ app.use('/v1', Routes_Favorites)
 
 // run server without vite
 app.listen(process.env.PORT_SOCKET, () => {
-    console.log('server running!');
-})
-
+  console.log("server running!");
+});
 
 export default app;

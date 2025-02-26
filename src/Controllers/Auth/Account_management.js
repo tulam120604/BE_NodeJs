@@ -82,6 +82,7 @@ export async function login(req, res) {
     res.cookie("access_token", accessToken, {
       httpOnly: false,
       secure: false,
+      path : '/',
       maxAge: 604800000,
     });
     return res.status(StatusCodes.OK).json({

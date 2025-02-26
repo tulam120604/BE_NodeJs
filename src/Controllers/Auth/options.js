@@ -69,7 +69,7 @@ export async function login(req, res) {
         check_email.password = undefined;
         res.cookie('access_token', accessToken, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             maxAge: 604800000
         })
         return res.status(StatusCodes.OK).json({

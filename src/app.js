@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -18,6 +17,7 @@ import RoutesNotification from "./Routes/Notification/Notification.js";
 import RoutesAddress from "./Routes/Auth/Address.js";
 // import RoutesPayment from './Routes/Payment/Payment.js';
 import Routes_Favorites from "./Routes/Items/Favorites.js";
+import Router_analytics from "./Routes/Analytics/Analytics_product.js";
 
 dotenv.config();
 const app = express();
@@ -62,6 +62,8 @@ app.use("/v1", RoutesAddress);
 
 // favorite
 app.use("/v1", Routes_Favorites);
+// analytics
+app.use("/v1", Router_analytics);
 
 // web socket
 // const server = createServer(app)

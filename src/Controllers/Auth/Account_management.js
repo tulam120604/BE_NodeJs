@@ -80,10 +80,10 @@ export async function login(req, res) {
     const refeshToken = createRefeshToken(check_email._id);
     check_email.password = undefined;
     res.cookie("access_token", accessToken, {
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
       path: '/',
-      sameSite : 'None',
+      sameSite : 'Strict',
       maxAge: 604800000,
     });
     return res.status(StatusCodes.OK).json({

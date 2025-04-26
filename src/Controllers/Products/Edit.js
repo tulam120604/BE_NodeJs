@@ -8,6 +8,7 @@ import { upload_img } from "../../middleware/upload.js";
 // edit all field
 export async function edit_Product(req, res) {
   try {
+    const { short_name } = req.body;
     const check_id = await Products.findById(req.params.id);
     const id_user = req.user.id;
     if (!check_id) {
@@ -96,7 +97,7 @@ export async function edit_Product(req, res) {
     }
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: error,
+      message: error.message || 500,
     });
   }
 }

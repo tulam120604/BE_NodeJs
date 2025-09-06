@@ -87,7 +87,7 @@ export async function login(req, res) {
       httpOnly: false,
       secure: false,
       path: "/",
-      sameSite: 'Strict',
+      sameSite: 'None',
       maxAge: 604800000,
     });
     return res.status(StatusCodes.OK).json({

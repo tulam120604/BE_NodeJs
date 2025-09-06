@@ -87,13 +87,11 @@ export async function login(req, res) {
       httpOnly: false,
       secure: false,
       path: "/",
-      sameSite: "Lax",
+      sameSite: 'Strict',
       maxAge: 604800000,
     });
     return res.status(StatusCodes.OK).json({
       message: "Login Done !",
-      accessToken,
-      refeshToken,
     });
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

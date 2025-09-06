@@ -17,7 +17,8 @@ import RoutesNotification from "./Routes/Notification/Notification.js";
 import RoutesAddress from "./Routes/Auth/Address.js";
 // import RoutesPayment from './Routes/Payment/Payment.js';
 import Routes_Favorites from "./Routes/Items/Favorites.js";
-import Router_analytics from "./Routes/Analytics/Analytics_product.js";
+import Router_analytics from "./Routes/Analytics/Analytics.js";
+import Router_Banner from "./Routes/Banner/Banner.js";
 
 dotenv.config();
 const app = express();
@@ -63,6 +64,8 @@ app.use("/v1", RoutesAddress);
 app.use("/v1", Routes_Favorites);
 // analytics
 app.use("/v1", Router_analytics);
+// banner
+app.use("/v1", Router_Banner);
 
 // web socket
 // const server = createServer(app)

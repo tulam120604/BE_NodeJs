@@ -1,18 +1,42 @@
-import Products from "../../Model/Products/Products.js";
+import Products from "../../Model/Items/Products.js";
 import { StatusCodes } from "http-status-codes";
 
 // hàm chung tham chiếu sang danh mục, biến thể sản phẩm và tính toán số lượng
-async function populate_and_caculation_quantity(querry, options) {
-  const data = await Products.paginate(querry, options);
-  await Products.populate(data.docs, [
-    {
-      path: "category_id",
-      select: "category_name",
-    },
-    { path: "variant" },
-  ]);
-  // console.log(data)
-  // await Products.populate(data.docs, );
+async function populate_and_caculation_quantity(querry, options, mode) {
+  let data;
+  if (mode === "dashboard") {
+    const skip_product = (+options.page - 1) * +options.limit;
+    const [docs, totalDocs] = await Promise.all([
+      Products.findWithDeleted(querry)
+        .skip(skip_product)
+        .limit(+options.limit)
+        .sort(options.sort)
+        .lean(),
+      Products.findWithDeleted(querry).countDocuments(),
+    ]);
+    await Products.populate(docs, [
+      {
+        path: "category_id",
+        select: "category_name",
+      },
+      { path: "variant" },
+    ]);
+    data = {
+      docs,
+      totalDocs,
+      totalPages: Math.ceil(totalDocs / +options.limit),
+    };
+  } else {
+    data = await Products.paginate(querry, options);
+    await Products.populate(data.docs, [
+      {
+        path: "category_id",
+        select: "category_name",
+      },
+      { path: "variant" },
+    ]);
+    // await Products.populate(data.docs, );
+  }
   for (const item of data.docs) {
     if (item.variant) {
       let current = 0;
@@ -52,10 +76,14 @@ export async function list_product_dashboard(req, res) {
         },
       ];
     }
-    const data = await populate_and_caculation_quantity(querry, options)
+    const data = await populate_and_caculation_quantity(
+      querry,
+      options,
+      "dashboard"
+    );
     if (!data.docs || data.docs.length === 0) {
       return res.status(StatusCodes.OK).json({
-        message: "Khong co data!",
+        message: "Khong co du lieu!",
       });
     }
     return res.status(StatusCodes.OK).json({
@@ -92,7 +120,11 @@ export async function list_product_client(req, res) {
         },
       ];
     }
-    const data = await populate_and_caculation_quantity(querry, options);
+    const data = await populate_and_caculation_quantity(
+      querry,
+      options,
+      "client"
+    );
     data.docs = data.docs.filter((item) => item.count_stock > 0);
     if (!data) {
       return res.status(StatusCodes.OK).json({
@@ -185,7 +217,11 @@ export async function list_product_by_category(req, res) {
         },
       ];
     }
-    const data = await populate_and_caculation_quantity(querry, options);
+    const data = await populate_and_caculation_quantity(
+      querry,
+      options,
+      "client"
+    );
     data.docs = data.docs.filter((item) => item.count_stock > 0);
     return res.status(StatusCodes.OK).json({
       message: "Done!",
@@ -194,30 +230,46 @@ export async function list_product_by_category(req, res) {
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: error.message || 500,
+      error: true,
     });
   }
 }
 
 // search
 export async function search_product(req, res) {
-  const { _search = "" } = req.query;
   try {
-    const querry = {};
-    if (_search) {
-      querry.$and = [
-        {
-          short_name: { $regex: RegExp(_search, "i") },
-        },
-      ];
-    }
-    const data = await Products.find(querry);
+    const { _search = "" } = req.query;
+    const data = await Products.find({
+      short_name: { $regex: ".*" + _search + ".*", $options: "i" },
+    }).populate("category_id").limit(30);
     return res.status(StatusCodes.OK).json({
       message: "Done",
+      error: false,
       data,
     });
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: error.message || 500,
+      error: true,
+    });
+  }
+}
+
+export async function list_product_search(req, res) {
+  try {
+  const { _page = 1, _limit = 100, _search , _bestseller = "" } = req.query;
+    const data = await Products.find({
+      short_name: { $regex: ".*" + _search + ".*", $options: "i" },
+    }).populate("category_id").populate("variant").limit(30);
+    return res.status(StatusCodes.OK).json({
+      message: "Done",
+      error: false,
+      data,
+    });
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: error.message || 500,
+      error: true,
     });
   }
 }

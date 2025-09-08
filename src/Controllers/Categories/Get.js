@@ -33,7 +33,7 @@ export async function GetAllCategories(req, res) {
 
 export async function Get_detail_category(req, res) {
     try {
-        const data = await Categories.findById(req.params.id_category);
+        const data = await Categories.findById(req.params.id);
         return res.status(StatusCodes.OK).json({
             message: 'OK',
             data
@@ -41,6 +41,7 @@ export async function Get_detail_category(req, res) {
     } catch (error) {
        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: error.message || 500,
+      error: true,
     });
     }
 }

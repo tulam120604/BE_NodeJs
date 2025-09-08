@@ -164,13 +164,16 @@ export async function view_detail_product_client(req, res) {
       // console.log(data.sale_quantity)
       await data.save();
     }
+    console.log(data)
     return res.status(StatusCodes.OK).json({
-      message: "Done",
+      message: "OK",
+      error : false,
       data,
     });
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: error.message || 500,
+      error : true
     });
   }
 }

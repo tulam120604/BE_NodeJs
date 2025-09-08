@@ -33,7 +33,7 @@ export async function GetAllCategories(req, res) {
 
 export async function Get_detail_category(req, res) {
     try {
-        const data = await Categories.findById(req.params.id);
+        const data = await Categories.findById(req.params.id_category);
         return res.status(StatusCodes.OK).json({
             message: 'OK',
             data

@@ -164,7 +164,6 @@ export async function view_detail_product_client(req, res) {
       // console.log(data.sale_quantity)
       await data.save();
     }
-    console.log(data)
     return res.status(StatusCodes.OK).json({
       message: "OK",
       error : false,

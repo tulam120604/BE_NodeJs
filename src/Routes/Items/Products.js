@@ -1,6 +1,5 @@
 import express from 'express';
 import { middleWare } from '../../middleware/Auth.js';
-import upload from '../../middleware/multer.js';
 
 import Products from '../../Controllers/Products/index.js'
 

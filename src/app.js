@@ -25,7 +25,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://fe-store88.vercel.app",
+    origin: ["https://fe-store88.vercel.app", "http://localhost:5000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })

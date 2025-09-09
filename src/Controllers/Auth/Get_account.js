@@ -34,7 +34,8 @@ export async function get_profile_user(req, res) {
     const data = await Account.findById(id_user).populate("address");
     if (!data) {
       return res.status(StatusCodes.NOT_FOUND).json({
-        message: "No data!",
+        message: "Không tìm thấy tài khoản!",
+        error : true
       });
     }
     data.password = undefined;
@@ -45,6 +46,7 @@ export async function get_profile_user(req, res) {
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: error.message || 500,
+      error : true
     });
   }
 }

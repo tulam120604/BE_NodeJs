@@ -92,6 +92,7 @@ export async function login(req, res) {
     });
     return res.status(StatusCodes.OK).json({
       message: "Đăng nhập thành công!",
+      accessToken,
       error: false,
     });
   } catch (error) {
